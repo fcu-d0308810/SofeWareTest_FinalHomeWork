@@ -3,6 +3,11 @@ public class User {
 	private String account = null;
 	private String password = null;
 	private String name = null;
+	public User(String account, String password, String name){
+		this.account = account;
+		this.password = password;
+		this.name = name;
+	}
 	public String getAccount() {
 		return account;
 	}

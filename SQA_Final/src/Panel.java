@@ -34,4 +34,16 @@ public class Panel extends JPanel{
 		this.add(label_west, BorderLayout.WEST);
 		this.add(textfield, BorderLayout.CENTER);
 	}
+	public Panel(TextArea textarea){
+		label_north = new JLabel("      ");
+		label_south = new JLabel("      ");
+		label_east = new JLabel("          ");
+		label_west = new JLabel("          ");
+		this.setLayout(new BorderLayout());
+		this.add(label_north, BorderLayout.NORTH);
+		this.add(label_south, BorderLayout.SOUTH);
+		this.add(label_east, BorderLayout.EAST);
+		this.add(label_west, BorderLayout.WEST);
+		this.add(textarea, BorderLayout.CENTER);
+	}
 }
