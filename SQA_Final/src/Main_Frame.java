@@ -15,7 +15,7 @@ public class Main_Frame extends JFrame{
 		this.setSize(800,800);
 		this.setLocation((dimension.width/2)-(this.getWidth()/2), dimension.height/2);
 		this.setLocationRelativeTo(null);
-		this.setResizable(false);	
+		this.setResizable(false);
 		this.setDefaultCloseOperation(EXIT_ON_CLOSE);		
 	}
 }

@@ -44,15 +44,15 @@ public class DataBase {
 		message = "Your account isn't exist!";
 		return message;
 	}
-	public String Registered(String account, String password, String name){
-		String message="";
+	public void Registered(String account, String password, String name){
 		try{
-			FileWriter filewriter = new FileWriter("user.txt");
-			filewriter.write(account+" "+password+" "+name);
+			
+			FileWriter filewriter = new FileWriter("user.txt",true);
+			filewriter.write(account+" "+password+" "+name+"\n");
+			filewriter.flush();
 			filewriter.close();
 		}catch(IOException e){
 			
 		}
-		return message;
 	}
 }

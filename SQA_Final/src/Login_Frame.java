@@ -1,3 +1,4 @@
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
@@ -5,14 +6,17 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 	
 public class Login_Frame extends JFrame implements ActionListener{
 	Button login_button, registered_button, forget_password_button;
 	Panel login_panel, registered_panel, forget_password_panel, account_input_panel, password_input_panel, console_panel;
-	TextField account_input_textfield, password_input_textfield;
+	TextField account_textfield;
+	PasswordField password_textfield;
 	TextArea console_textarea;
+	Border default_border;
 	JPanel space = new JPanel();
-	boolean isFirstTime = true;
+	int wrong_time = 0;
 	public Login_Frame(){
 		Frame_Setting();
 		Button_Setting();
@@ -22,8 +26,18 @@ public class Login_Frame extends JFrame implements ActionListener{
 		Add_into();
 		this.setVisible(true);
 	}
+	public Login_Frame(String account){
+		Frame_Setting();
+		Button_Setting();
+		TextField_Setting();
+		account_textfield.setText(account);
+		TextArea_Setting();
+		Panel_Setting();
+		Add_into();
+		this.setVisible(true);
+	}
 	private void Frame_Setting(){
-		this.setTitle("登入");
+		this.setTitle("登 入");
 		Dimension dimension = Toolkit.getDefaultToolkit().getScreenSize();
 		this.setSize(400,800);
 		this.setLocation((dimension.width/2)-(this.getWidth()/2), dimension.height/2);
@@ -47,13 +61,14 @@ public class Login_Frame extends JFrame implements ActionListener{
 		login_panel = new Panel(login_button);
 		registered_panel = new Panel(registered_button);
 		forget_password_panel = new Panel(forget_password_button);
-		account_input_panel = new Panel(account_input_textfield, "帳號：");
-		password_input_panel = new Panel(password_input_textfield, "密碼：");
+		account_input_panel = new Panel(account_textfield, "帳號：");
+		password_input_panel = new Panel(password_textfield, "密碼：");
 		console_panel = new Panel(console_textarea);
 	}
 	private void TextField_Setting(){
-		account_input_textfield = new TextField();
-		password_input_textfield = new TextField();
+		account_textfield = new TextField();
+		password_textfield = new PasswordField();
+		default_border = account_textfield.getBorder();
 	}
 	private void TextArea_Setting(){
 		console_textarea = new TextArea();
@@ -68,15 +83,23 @@ public class Login_Frame extends JFrame implements ActionListener{
 		this.add(forget_password_panel);
 		
 	}
-	public void Lock_Button(){
+	private void Lock_Button(){
 		login_button.setEnabled(false);
 		registered_button.setEnabled(false);
 		forget_password_button.setEnabled(false);
 	}
-	public void Unlock_Button(){
+	private void Unlock_Button(){
 		login_button.setEnabled(true);
 		registered_button.setEnabled(true);
 		forget_password_button.setEnabled(true);
+	}
+	private void Error_Account_Change(){
+		account_textfield.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
+		password_textfield.setBorder(default_border);
+	}
+	private void Error_Password_Change(){
+		account_textfield.setBorder(default_border);
+		password_textfield.setBorder(BorderFactory.createLineBorder(Color.RED, 2));
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -86,24 +109,39 @@ public class Login_Frame extends JFrame implements ActionListener{
 		DataBase database = new DataBase();
 		if(command.equals("Login")){
 			Lock_Button();
-			message = database.Check(account_input_textfield.getText(), password_input_textfield.getText());
-			if(message.equals("")){
-				Main_Frame main_frame = new Main_Frame();
-				this.dispose();
-				
+			if(!account_textfield.getText().isEmpty()){
+				if(!password_textfield.getText().isEmpty()){
+					message = database.Check(account_textfield.getText(), password_textfield.getText());
+					if(message.equals("")){
+						Main_Frame main_frame = new Main_Frame();
+						this.dispose();
+					}
+					else{
+						console_textarea.setText(message);
+						wrong_time++;
+						if(wrong_time>=3){
+							this.dispose();
+						}
+					}
+				}
+				else{
+					console_textarea.setText("Your password is empty!");
+					Error_Password_Change();
+				}
 			}
 			else{
-				console_textarea.setText(message);
+				console_textarea.setText("Your account is empty!");
+				Error_Account_Change();
 			}
 			Unlock_Button();
 		}
 		else if(command.equals("Registered")){
-			this.setVisible(false);
 			Registered_Frame registered_Frame = new Registered_Frame();
-			this.setVisible(true);
+			this.dispose();
 		}
 		else if(command.equals("forget")){
-			isFirstTime = false;
+			Forget_Password_Frame forget_password_frame = new Forget_Password_Frame();
+			this.dispose();
 		}
 		else{
 			
